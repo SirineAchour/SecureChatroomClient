@@ -167,7 +167,7 @@ def chat_client():
     uname = sys.argv[4]
     ind = 0 
     newuser = False 
-    s.settimeout(2)
+    #s.settimeout()
     reciever = 'none'
 
     try :
