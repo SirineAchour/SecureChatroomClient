@@ -94,8 +94,12 @@ def send_file(pref , file) :
     f.close()
 
 def send_msg(msg) : 
+    print "about to send message to server"
     data = str(msg)
+    print "data : "
+    print data
     s.sendall(data)
+    print "sent data and now waiting for recv 1"
     s.recv(1)
 
 
