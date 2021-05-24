@@ -13,13 +13,6 @@ jobs:
           # Static Code Security Analysis
           cd sonarqube && \
               docker-compose up -d
-          cd .. && \
-              docker run \
-              --rm \
-              -e SONAR_HOST_URL="http://sonarqube:9000" \
-              -e SONAR_LOGIN="sonar" \
-              -v "$(pwd ):/usr/src" \
-              sonarsource/sonar-scanner-cli
 
           # Build Docker image
           docker build --tag siriine/chatroom-client:latest .

@@ -28,6 +28,15 @@ services:
       - postgresql_data:/var/lib/postgresql/data
     networks:
       - sonarnet
+  scanner:
+    image: sonarsource/sonar-scanner-cli
+    environment:
+      SONAR_HOST_URL: "http://sonarqube:9000"
+      SONAR_LOGIN: "sonar"
+    volumes:
+      - ./:/usr/src
+    networks:
+      - sonarnet
 volumes:
   sonarqube_data:
   sonarqube_extensions:
