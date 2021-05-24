@@ -11,8 +11,18 @@ jobs:
           dockerhub_token : ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           # Static Code Security Analysis
-          # sonarqube .
+          docker run \
+              --rm \
+              -e SONAR_HOST_URL="http://0.0.0.0" \
+              -e SONAR_LOGIN="myAuthenticationToken" \
+              -v ".:/usr/src" \
+              sonarsource/sonar-scanner-cli
 
           # Build Docker image
-          python2 --version
+          docker build --tag siriine/chatroom-client:latest .
+
+          # Push Docker image to Image Repository
+          docker login -u siriine -p $dockerhub_token
+          docker push siriine/chatroom-client:latest
+          docker logout
 
