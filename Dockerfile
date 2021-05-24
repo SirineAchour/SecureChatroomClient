@@ -9,7 +9,8 @@ COPY . .
 
 RUN pip2 install -r requirements.txt
 
-CMD ["usage: docker run -it <image> python2 client.py <ip> <port> <password> <username>"]
+#CMD ["usage: docker run -it <image> python2 client.py <ip> <port> <password> <username>"]
 
-ENTRYPOINT ["echo"]
+#ENTRYPOINT ["echo"]
+ENTRYPOINT ["/bin/bash"]
 
