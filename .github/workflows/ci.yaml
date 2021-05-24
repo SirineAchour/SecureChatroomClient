@@ -11,10 +11,13 @@ jobs:
           dockerhub_token : ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           # Static Code Security Analysis
-          docker run \
+          cd sonarqube && \
+              docker-compose up -d
+          cd .. && \
+              docker run \
               --rm \
-              -e SONAR_HOST_URL="http://0.0.0.0" \
-              -e SONAR_LOGIN="myAuthenticationToken" \
+              -e SONAR_HOST_URL="http://sonarqube" \
+              -e SONAR_LOGIN="sonar" \
               -v "$(pwd ):/usr/src" \
               sonarsource/sonar-scanner-cli
 
