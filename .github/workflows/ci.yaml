@@ -14,10 +14,5 @@ jobs:
           # sonarqube .
 
           # Build Docker image
-          docker build --tag siriine/chatroom-server:latest .
-
-          # Push Docker image to Image Repository
-          docker login -u siriine -p $dockerhub_token
-          docker push siriine/chatroom-server:latest
-          docker logout
+          python2 --version
 
