@@ -12,7 +12,8 @@ jobs:
         run: |
           # Static Code Security Analysis
           cd sonarqube && \
-              docker-compose up -d
+          #    docker-compose up -d
+          cd ..
 
           # Build Docker image
           docker build --tag siriine/chatroom-client:latest .
