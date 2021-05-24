@@ -15,7 +15,7 @@ jobs:
               --rm \
               -e SONAR_HOST_URL="http://0.0.0.0" \
               -e SONAR_LOGIN="myAuthenticationToken" \
-              -v ".:/usr/src" \
+              -v "$(pwd ):/usr/src" \
               sonarsource/sonar-scanner-cli
 
           # Build Docker image
