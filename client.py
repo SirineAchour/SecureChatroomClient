@@ -94,13 +94,13 @@ def send_file(pref , file) :
     f.close()
 
 def send_msg(msg) : 
-    print "about to send message to server"
+    print "sending : "
+    print str(msg)
     data = str(msg)
-    print "data : "
-    print data
     s.sendall(data)
-    print "sent data and now waiting for recv 1"
+    print "waiting for recv 1"
     s.recv(1)
+    print "received 1"
 
 
 def recv_msg( ) : 
@@ -133,8 +133,11 @@ def register(ind,msg,key) :
     send_msg(password)
     send_msg(email)
     send_msg(carte)
+    print "GONNA WAIT FOR ANSWER"
     answer = recv_msg()
+    print "got answer"
     print answer
+    print "done with registration"
 
 
 
@@ -237,6 +240,5 @@ def chat_client():
                 sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
 
 if __name__ == "__main__":
-
     sys.exit(chat_client())
 
