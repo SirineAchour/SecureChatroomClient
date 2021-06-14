@@ -178,6 +178,7 @@ def chat_client():
 
     try :
         s.connect((host, port))
+        print("connected to server now waiting for msg")
         ind = recv_msg()
 
         print(ind )
