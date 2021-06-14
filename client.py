@@ -237,7 +237,11 @@ def chat_client():
 
 
 def users(connected):
-    pass
+    if connected:
+        send_msg(str(ind) + 'cus')
+        recv_available_clients()
+    else:
+        send_msg(str(ind) + 'dus')
 
 def signup(ind,msg,key,username,password) :
     try:
@@ -251,7 +255,7 @@ def signup(ind,msg,key,username,password) :
         print("Sign up succeded!")
         return True
     except:
-        print("Something went wrong :( try again ?")
+        print("Something went wrong :( Try again ?")
         return False
 
 def login(ind, username, password):
@@ -272,7 +276,7 @@ def login(ind, username, password):
             input()
             return False
     except:
-            print("Something went wrong :( try again ?")
+            print("Something went wrong :( Try again ?")
             return False
 
 def clear():
@@ -394,7 +398,7 @@ def logged_in_menu(username):
 
 def validate_username(username, existing):
     if " " in username:
-        print("Can't have spaces in a username :( try another one")
+        print("Can't have spaces in a username :( Try another one")
         return False
     # check unicity
     send_msg(str(ind) + 'srh')
@@ -404,7 +408,11 @@ def validate_username(username, existing):
         return True
     elif not existing and m == '0':
         return True
+    elif not existing and m == '1':
+        print("Username already take :( Try another one")
+        return False
     else:
+        print("This doesn't exist.. Focus! Try another username")
         return False
 
 def validate_password(password):
@@ -449,7 +457,7 @@ def main_menu(ind,key):
             print("Password ?")
             password = getpass.getpass()
             if not validate_password(password):
-                print("That can't really be your password.. try again")
+                print("That can't really be your password.. Try again")
             else:
                 print("Are you really " + str(username) + " ? Checking...")
                 if login(ind, username, password):
