@@ -14,6 +14,8 @@ from cryptography.hazmat.primitives.serialization import NoEncryption
 import time
 import getpass
 from cryptography.hazmat.primitives.asymmetric import padding
+import platform
+
 BUFFER_SIZE = 8192
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -238,6 +240,250 @@ def chat_client():
                 
                 sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
 
+
+
+def users(connected):
+    pass
+
+def signup(ind,msg,key,username,password) :
+    try:
+        create_csr(u"at",u"at",u"at",u"at",u"at",key)
+        send_file(str(ind)+msg , 'clientcsr.pem') 
+        rcv_file("certificate.pem")
+        rcv_file("ca.pem")  
+        send_msg(username)
+        send_msg(password)
+        answer = recv_msg()
+        print("Sign up succeded!")
+        return True
+    except:
+        print("Something went wrong :( try again ?")
+        return False
+
+def login(ind, username, password):
+    send_msg(str(ind) + 'aut')
+    send_msg(username)
+    send_msg(password)
+    answer = recv_msg()
+    if answer == 'done' :
+        print('Login succeeded!' )
+        #print('\navailable people to chat with : \n')
+        #recv_available_clients()
+        return True
+    else :
+        print("Busted! You're not really "+str(username)+".. Go away imposter!")
+        return False
+        #print('error , bad credentials')
+        #auth(ind)
+
+def clear():
+    if os_name == "Windows":
+        os.system('cls')
+        return
+    if os_name == "Linux":
+        os.system('clear')
+        return
+
+def logged_in_menu(username):
+    logged_in = True
+    while logged_in:
+        clear()
+        print("Hi " + str(username) + "!")
+        print("1- Users")
+        print("2- Messages")
+        print("3- Log out")
+        print("4- Delete account")
+
+        option = input()
+        clear()
+        stay_in_submenu = True
+        if option == "1":
+            while stay_in_submenu:
+                print("1- Connected users")
+                print("2- All users")
+                print("3- Return")
+                submenu_option = input()
+                clear()
+                if submenu_option == "1":
+                    print("CONNECTED USERS:")
+                    users(True)
+                    input()
+                    clear()
+                elif submenu_option == "2":
+                    print("ALL USERS:")
+                    users(False)
+                    input()
+                    clear()
+                elif submenu_option == "3":
+                    stay_in_submenu = False
+                else:
+                    stay_in_submenu = True
+        elif option == "2":
+            while stay_in_submenu:
+                print("1- New message")
+                print("2- All messages")
+                print("3- Return")
+                submenu_option = input()
+                clear()
+                if submenu_option == "1":
+                    print("NEW MESSAGE:")
+                    target = input("Target : ")
+
+                    if actions.check_if_user_in_list_of_users(target):
+                        msgs = []
+                        msg = input("Message : ")
+                        while len(msg) != 0:
+                            msgs.append(msg)
+                            msg = input("Message : ")
+                        for msg in msgs:
+                            actions.send_new_message(target, msg)
+                        print("Messages sent!")
+                    else:
+                        print("Boohoo user doesn't exist")
+                    input()
+                    clear()
+                elif submenu_option == "2":
+                    print("ALL MESSAGES:")
+                    messages = []
+                    messages = actions.messages(username)
+                    i = 1
+                    for message in messages:
+                        print(str(i) + ") " + message['sender'] + ": " + message['msg'])
+                        i = i + 1
+                    i = input()
+                    clear()
+
+                    convo = []
+                    convo = actions.messages_of_user(username, messages[int(i) - 1]['sender'])
+                    for line in convo:
+                        print("(" + line["date"] + ") " + line['sender'] + ": " + line['msg'])
+                    # start thread that sends msgs
+                    send_msgs_thread = threading.Thread(target=actions.send_message,
+                                                        args=(username, messages[int(i) - 1]['sender'],))
+                    send_msgs_thread.start()
+
+                    # _thread.start_new_thread(actions.send_message, (username, messages[int(i) - 1]['sender'], ))
+
+                    # start thread that receives msgs
+                    receive_msgs_thread = threading.Thread(target=actions.receive_message,
+                                                           args=(username, messages[int(i) - 1]['sender'],))
+                    receive_msgs_thread.start()
+                    send_msgs_thread.join()
+                    receive_msgs_thread.join()
+                    # _thread.start_new_thread(actions.receive_message, (username, messages[int(i) - 1]['sender'],))
+
+                    input()
+                    clear()
+                elif submenu_option == "3":
+                    stay_in_submenu = False
+                else:
+                    stay_in_submenu = True
+
+        elif option == "3":
+            while stay_in_submenu:
+                print("Are you sure you want to log out ?")
+                print("1- Yes")
+                print("3- No")
+        elif option == "4":
+            while stay_in_submenu:
+                print("Are you sure you want to delete your account ? "
+                      "Once you do, all messages will be deleted and this account can never be recovered")
+                print("1- Yes")
+                print("3- No")
+        else:
+            pass
+
+def validate_username(username, existing):
+    if " " in username:
+        print("Can't have spaces in a username :( try another one")
+        return False
+    # check unicity
+    send_msg(str(ind) + 'srh')
+    send_msg(username)
+    m = recv_msg(1)
+    if existing and m == '1':
+        return True
+    elif not existing and m == '0':
+        return True
+    else:
+        return False
+
+def validate_password(password):
+    if len(str(password)) == 0:
+        return False
+    return True
+
+def main_menu(ind,key):
+    exit = False
+    print("Welcome welcome!")
+    while not exit:
+        print("1- Sign up")
+        print("2- Login")
+        print("3- Exit")
+
+        choice = input()
+        clear()
+        if choice == "1":
+            print("SIGN UP:\nPlease provide a valid and unique username :")
+            username = input()
+            while not validate_username(username, False):
+                username = input()
+
+            print("Now provide a password (make sure to use symbols, numbers and letters and make it long):")
+            password = input()
+            while not validate_password(password):
+                print("Huh... Is that really the password you want ? I don't think so. Try again")
+                #password = input()
+                password = getpass.getpass()
+            if signup(ind,'csr',key, username, password):
+                #logged_in_menu(username)
+                print("Now go login")
+                clear()
+
+        elif choice == "2":
+            print("LOGIN:\nUsername ?")
+            username = input()
+            while not validate_username(username, True):
+                username = input()
+
+            print("Password ?")
+            password = getpass.getpass()
+            if not validate_password(password):
+                print("That can't really be your password.. try again")
+            else:
+                print("Are you really " + str(username) + " ? Checking...")
+                if login(username, password):
+                    logged_in_menu(username)
+
+        elif choice == "3":
+            exit = True
+        else:
+            pass
+
+
 if __name__ == "__main__":
-    sys.exit(chat_client())
+    os_name = platform.system()
+    if(len(sys.argv) < 3) :
+        print('Run : python client.py <hostname|ip_address> <port>')
+        sys.exit()
+    key = genkey()
+    host = sys.argv[1]
+    port = int(sys.argv[2]) 
+    uname = sys.argv[4]
+    ind = 0 
+    newuser = False 
+    #s.settimeout()
+    reciever = 'none'
+
+    try :
+        s.connect((host, port))
+        ind = recv_msg()
+
+        print(str(ind) )
+    except :
+        print("\033[91m"+'Unable to connect, Server is unavailable'+"\033[0m")
+        sys.exit()
+
+    print("Connected to the chat server. You can start sending messages.")
+    sys.exit(main_menu(ind,key))
 
