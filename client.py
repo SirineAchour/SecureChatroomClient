@@ -400,7 +400,7 @@ def validate_username(username, existing):
     # check unicity
     send_msg(str(ind) + 'srh')
     send_msg(username)
-    m = recv_msg(1)
+    m = recv_msg()
     if existing and m == '1':
         return True
     elif not existing and m == '0':
