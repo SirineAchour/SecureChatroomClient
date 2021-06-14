@@ -145,7 +145,7 @@ def recv_available_clients():
     print("IN RECV AVAULABLE CLIENTS")
     msg =  recv_msg()
     print("FIRST MSG")
-    while msg != 'abc' :
+    while msg != '/done/' :
       print(msg)
       msg = recv_msg()
       print("SECOND MESSAGE")
