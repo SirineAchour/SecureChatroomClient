@@ -18,13 +18,7 @@ import platform
 
 BUFFER_SIZE = 8192
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 os.system("clear")
-print("""
-    ----------------------------
-        CLIENT STARTING...                 
-    ----------------------------
-""")
 
 def sigint_handler(signum, frame):
     print('\n User disconnected !!')
@@ -261,22 +255,25 @@ def signup(ind,msg,key,username,password) :
         return False
 
 def login(ind, username, password):
-    send_msg(str(ind) + 'aut')
-    send_msg(username)
-    send_msg(password)
-    answer = recv_msg()
-    if answer == 'done' :
-        print('Login succeeded!' )
-        #print('\navailable people to chat with : \n')
-        #recv_available_clients()
-        input()
-        return True
-    else :
-        print("Busted! You're not really "+str(username)+".. Go away imposter!")
-        input()
-        return False
-        #print('error , bad credentials')
-        #auth(ind)
+    print("*in login")
+    try:
+        send_msg(str(ind) + 'aut')
+        send_msg(username)
+        send_msg(password)
+        answer = recv_msg()
+        if answer == 'done' :
+            print('Login succeeded!' )
+            #print('\navailable people to chat with : \n')
+            #recv_available_clients()
+            input()
+            return True
+        else :
+            print("Busted! You're not really "+str(username)+".. Go away imposter!")
+            input()
+            return False
+    except:
+            print("Something went wrong :( try again ?")
+            return False
 
 def clear():
     if os_name == "Windows":
@@ -451,12 +448,11 @@ def main_menu(ind,key):
 
             print("Password ?")
             password = getpass.getpass()
-            print(password)
             if not validate_password(password):
                 print("That can't really be your password.. try again")
             else:
                 print("Are you really " + str(username) + " ? Checking...")
-                if login(username, password):
+                if login(ind, username, password):
                     logged_in_menu(username)
 
         elif choice == "3":
