@@ -108,6 +108,7 @@ def send_msg(msg) :
 def recv_msg( ) : 
     data = s.recv(8192)
     s.sendall('1'.encode('utf-8'))
+    print("received this : "+str(data.decode("utf-8")))
     return data.decode("utf-8")
 
 
@@ -149,6 +150,7 @@ def recv_available_clients():
     while msg != 'abc' :
       print(msg)
       msg = recv_msg()
+      
 
 def auth(ind) : 
     send_msg(str(ind) + 'aut')
@@ -195,7 +197,6 @@ def chat_client():
 
     if (not os.path.isfile('certificate.pem') ) : 
         print('this is a new user , you should register')
-
         register(ind,'csr',key)
     auth(ind)
     pem_ca_cert = open('ca.pem','rb').read()
@@ -208,8 +209,6 @@ def chat_client():
     my_key = serialization.load_pem_private_key(pem_ca_key, password = None,backend = default_backend()) 
 
 
-
-
     sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
     while 1:
         socket_list = [sys.stdin, s]
@@ -217,7 +216,6 @@ def chat_client():
 
         for sock in read_sockets:
             if sock == s:
-
                 data = recv_msg()
                 if not data :
                     print("\033[91m"+"\nServer shutdown !!"+"\033[0m")
@@ -230,7 +228,6 @@ def chat_client():
                     sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
 
             else :
-
                 msg = sys.stdin.readline()
                 if reciever == 'none' : 
                     reciever = input('choose reciever : ')
@@ -238,8 +235,6 @@ def chat_client():
                 send_msg(reciever)
                 msg = encrypt(ca_key,msg)
                 send_msg(msg)
-
-
                 
                 sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
 
