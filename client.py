@@ -18,15 +18,15 @@ BUFFER_SIZE = 8192
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 os.system("clear")
-print ("""
+print("""
     ----------------------------
         CLIENT STARTING...                 
     ----------------------------
 """)
 
 def sigint_handler(signum, frame):
-    print ('\n User disconnected !!')
-    print ("[info] shutting down Chat \n\n")
+    print('\n User disconnected !!')
+    print("[info] shutting down Chat \n\n")
     sys.exit()  
     
 
@@ -94,13 +94,13 @@ def send_file(pref , file) :
     f.close()
 
 def send_msg(msg) : 
-    print "sending : "
-    print str(msg)
+    print("sending : ")
+    print(str(msg))
     data = str(msg)
     s.sendall(data)
-    print "waiting for recv 1"
+    print("waiting for recv 1")
     s.recv(1)
-    print "received 1"
+    print("received 1")
 
 
 def recv_msg( ) : 
@@ -133,40 +133,39 @@ def register(ind,msg,key) :
     send_msg(password)
     send_msg(email)
     send_msg(carte)
-    print "GONNA WAIT FOR ANSWER"
+    print("GONNA WAIT FOR ANSWER")
     answer = recv_msg()
-    print "got answer"
-    print answer
-    print "done with registration"
-
+    print("got answer")
+    print(answer)
+    print("done with registration")
 
 
 def recv_available_clients():
     msg =  recv_msg()
     while msg != 'abc' :
-      print msg
+      print(msg)
       msg = recv_msg()
 
 def auth(ind) : 
     send_msg(str(ind) + 'aut')
-    print 'time to authenticate : \n'
+    print('time to authenticate : \n')
     login = raw_input('login : ')
     password = getpass.getpass()
     send_msg(login)
     send_msg(password)
     answer = recv_msg()
     if answer == 'done' :
-        print 'authentification complete' 
-        print '\navailable people to chat with : \n'
+        print('authentification complete' )
+        print('\navailable people to chat with : \n')
         recv_available_clients()
     else :
-        print 'error , bad credentials'
+        print('error , bad credentials')
         auth(ind)
 
 
 def chat_client():
     if(len(sys.argv) < 5) :
-        print ('Run : python client.py <hostname|ip_address> <port> <password> <nick_name>')
+        print('Run : python client.py <hostname|ip_address> <port> <password> <nick_name>')
         sys.exit()
     key = genkey()
     host = sys.argv[1]
@@ -181,12 +180,12 @@ def chat_client():
         s.connect((host, port))
         ind = recv_msg()
 
-        print ind 
+        print(ind )
     except :
-        print ("\033[91m"+'Unable to connect, Server is unavailable'+"\033[0m")
+        print("\033[91m"+'Unable to connect, Server is unavailable'+"\033[0m")
         sys.exit()
 
-    print ("Connected to the chat server. You can start sending messages.")
+    print("Connected to the chat server. You can start sending messages.")
     
 
     if (not os.path.isfile('certificate.pem') ) : 
@@ -216,7 +215,7 @@ def chat_client():
 
                 data = recv_msg()
                 if not data :
-                    print ("\033[91m"+"\nServer shutdown !!"+"\033[0m")
+                    print("\033[91m"+"\nServer shutdown !!"+"\033[0m")
                     sys.exit()
                 elif data[:7] == 'nouveau':
                     sys.stdout.write(data)
