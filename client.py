@@ -89,7 +89,7 @@ def send_file(pref , file) :
     f = open(file, 'rb') 
 
     l = f.read(BUFFER_SIZE)
-    s.sendall(pref  + l)
+    s.sendall((pref  + l).encode('utf-8'))
     s.recv(1)
     f.close()
 
@@ -97,25 +97,25 @@ def send_msg(msg) :
     print("sending : ")
     print(str(msg))
     data = str(msg)
-    s.sendall(data)
+    s.sendall(data.encode('utf-8'))
     print("waiting for recv 1")
     s.recv(1)
     print("received 1")
 
 
 def recv_msg( ) : 
-    data = s.recv(8192)
-    s.sendall('1')
+    data = s.recv(8192).decode("utf-8")
+    s.sendall('1'.encode('utf-8'))
     return data
 
 
 def rcv_file(file) :
     filename=str(file)
     with open(filename,'wb') as f : 
-        data = s.recv(BUFFER_SIZE)
+        data = s.recv(BUFFER_SIZE).decode("utf-8")
         f.write(data)
         f.close()
-    s.sendall('1')
+    s.sendall('1'.encode('utf-8'))
 
 
 def register(ind,msg,key) :
