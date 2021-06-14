@@ -86,8 +86,9 @@ def decrypt (public_key,msg):
     return data
 
 def send_file(pref , file) :
+    print("pref : "+str(pref))
+    print("file : "+str(file))
     f = open(file, 'rb') 
-
     l = f.read(BUFFER_SIZE)
     s.sendall((pref  + l).encode('utf-8'))
     s.recv(1)
@@ -104,16 +105,16 @@ def send_msg(msg) :
 
 
 def recv_msg( ) : 
-    data = s.recv(8192).decode("utf-8")
+    data = s.recv(8192)
     s.sendall('1'.encode('utf-8'))
-    return data
+    return data.decode("utf-8")
 
 
 def rcv_file(file) :
     filename=str(file)
     with open(filename,'wb') as f : 
-        data = s.recv(BUFFER_SIZE).decode("utf-8")
-        f.write(data)
+        data = s.recv(BUFFER_SIZE)
+        f.write(data.decode("utf-8"))
         f.close()
     s.sendall('1'.encode('utf-8'))
 
@@ -125,6 +126,8 @@ def register(ind,msg,key) :
     carte = input('NCarte: ')
 
     create_csr(u"at",u"at",u"at",u"at",u"at",key)
+    print("ind : "+str(ind))
+    print("msg : "+str(msg))
     send_file(str(ind)+msg , 'clientcsr.pem') 
     rcv_file("certificate.pem")
     rcv_file("ca.pem")  
