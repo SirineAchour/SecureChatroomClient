@@ -90,7 +90,7 @@ def send_file(pref , file) :
     print("file : "+str(file))
     f = open(file, 'rb') 
     l = f.read(BUFFER_SIZE)
-    tmp = pref  + l
+    tmp = pref + l.decode("utf-8")
     s.sendall(tmp.encode('utf-8'))
     s.recv(1)
     f.close()
