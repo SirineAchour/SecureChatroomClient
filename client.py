@@ -269,9 +269,11 @@ def login(ind, username, password):
         print('Login succeeded!' )
         #print('\navailable people to chat with : \n')
         #recv_available_clients()
+        input()
         return True
     else :
         print("Busted! You're not really "+str(username)+".. Go away imposter!")
+        input()
         return False
         #print('error , bad credentials')
         #auth(ind)
@@ -438,6 +440,7 @@ def main_menu(ind,key):
             if signup(ind,'csr',key, username, password):
                 #logged_in_menu(username)
                 print("Now go login")
+                input()
                 clear()
 
         elif choice == "2":
