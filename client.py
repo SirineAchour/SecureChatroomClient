@@ -119,10 +119,10 @@ def rcv_file(file) :
 
 
 def register(ind,msg,key) :
-    login = raw_input('login : ')
+    login = input('login : ')
     password = getpass.getpass()
-    email = raw_input('email : ')
-    carte = raw_input('NCarte: ')
+    email = input('email : ')
+    carte = input('NCarte: ')
 
     create_csr(u"at",u"at",u"at",u"at",u"at",key)
     send_file(str(ind)+msg , 'clientcsr.pem') 
@@ -149,7 +149,7 @@ def recv_available_clients():
 def auth(ind) : 
     send_msg(str(ind) + 'aut')
     print('time to authenticate : \n')
-    login = raw_input('login : ')
+    login = input('login : ')
     password = getpass.getpass()
     send_msg(login)
     send_msg(password)
@@ -229,7 +229,7 @@ def chat_client():
 
                 msg = sys.stdin.readline()
                 if reciever == 'none' : 
-                    reciever = raw_input('choose reciever : ')
+                    reciever = input('choose reciever : ')
                 send_msg(str(ind)+'msg')
                 send_msg(reciever)
                 msg = encrypt(ca_key,msg)
