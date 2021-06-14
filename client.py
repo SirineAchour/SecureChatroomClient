@@ -189,7 +189,7 @@ def chat_client():
     
 
     if (not os.path.isfile('certificate.pem') ) : 
-        print'this is a new user , you should register'
+        print('this is a new user , you should register')
 
         register(ind,'csr',key)
     auth(ind)
