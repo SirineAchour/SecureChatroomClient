@@ -141,15 +141,12 @@ def register(ind,msg,key) :
     print("done with registration")
 
 
-def recv_available_clients():
-    print("IN RECV AVAULABLE CLIENTS")
+def recv_clients():
+    print("IN RECV  CLIENTS")
     msg =  recv_msg()
-    print("FIRST MSG")
     while msg != '/done/' :
       print(msg)
       msg = recv_msg()
-      print("SECOND MESSAGE")
-      return
       
 
 def auth(ind) : 
@@ -163,7 +160,7 @@ def auth(ind) :
     if answer == 'done' :
         print('authentification complete' )
         print('\navailable people to chat with : \n')
-        recv_available_clients()
+        recv_clients()
     else :
         print('error , bad credentials')
         auth(ind)
@@ -243,9 +240,9 @@ def chat_client():
 def users(connected, ind):
     if connected:
         send_msg(str(ind) + 'cus')
-        recv_available_clients()
     else:
         send_msg(str(ind) + 'dus')
+    recv_clients()
 
 def signup(ind,msg,key,username,password) :
     try:
@@ -272,7 +269,7 @@ def login(ind, username, password):
         if answer == 'done' :
             print('Login succeeded!' )
             #print('\navailable people to chat with : \n')
-            #recv_available_clients()
+            #recv_clients()
             input()
             return True
         else :
@@ -282,6 +279,11 @@ def login(ind, username, password):
     except:
             print("Something went wrong :( Try again ?")
             return False
+
+def logout(ind):
+    send_msg(str(ind) + 'lgo')
+    msg =  recv_msg()
+    return True
 
 def clear():
     if os_name == "Windows":
@@ -391,18 +393,46 @@ def logged_in_menu(username, ind):
                 print("Are you sure you want to log out ?")
                 print("1- Yes")
                 print("3- No")
+                submenu_option = input()
+                clear()
+                if submenu_option == "1":
+                    print("Logging out...")
+                    logout(ind)
+                    print("Bye bye~~")
+                    input()
+                    clear()
+                    return
+                elif submenu_option == "2":
+                    stay_in_submenu = False
+                else:
+                    stay_in_submenu = True
+                
         elif option == "4":
             while stay_in_submenu:
                 print("Are you sure you want to delete your account ? "
-                      "Once you do, all messages will be deleted and this account can never be recovered")
+                      "Once you do, your account can never be recovered")
                 print("1- Yes")
                 print("3- No")
+                submenu_option = input()
+                clear()
+                if submenu_option == "1":
+                    print("Deleting account...")
+                    input()
+                    clear()
+                    return
+                elif submenu_option == "2":
+                    stay_in_submenu = False
+                else:
+                    stay_in_submenu = True
         else:
             pass
 
 def validate_username(username, existing):
     if " " in username:
         print("Can't have spaces in a username :( Try another one")
+        return False
+    if username == "/done/":
+        print("Invalid username sorry :( Try another one")
         return False
     # check unicity
     send_msg(str(ind) + 'srh')
