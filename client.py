@@ -181,7 +181,7 @@ def chat_client():
         print("connected to server now waiting for msg")
         ind = recv_msg()
 
-        print(ind )
+        print(str(ind) )
     except :
         print("\033[91m"+'Unable to connect, Server is unavailable'+"\033[0m")
         sys.exit()
