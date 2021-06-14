@@ -432,7 +432,7 @@ def main_menu(ind,key):
                 username = input()
 
             print("Now provide a password (make sure to use symbols, numbers and letters and make it long):")
-            password = input()
+            password = getpass.getpass()
             while not validate_password(password):
                 print("Huh... Is that really the password you want ? I don't think so. Try again")
                 #password = input()
@@ -451,6 +451,7 @@ def main_menu(ind,key):
 
             print("Password ?")
             password = getpass.getpass()
+            print(password)
             if not validate_password(password):
                 print("That can't really be your password.. try again")
             else:
