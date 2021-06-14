@@ -236,7 +236,7 @@ def chat_client():
 
 
 
-def users(connected):
+def users(connected, ind):
     if connected:
         send_msg(str(ind) + 'cus')
         recv_available_clients()
@@ -287,7 +287,7 @@ def clear():
         os.system('clear')
         return
 
-def logged_in_menu(username):
+def logged_in_menu(username, ind):
     logged_in = True
     while logged_in:
         clear()
@@ -309,12 +309,12 @@ def logged_in_menu(username):
                 clear()
                 if submenu_option == "1":
                     print("CONNECTED USERS:")
-                    users(True)
+                    users(True, ind)
                     input()
                     clear()
                 elif submenu_option == "2":
                     print("ALL USERS:")
-                    users(False)
+                    users(False,ind)
                     input()
                     clear()
                 elif submenu_option == "3":
@@ -461,7 +461,7 @@ def main_menu(ind,key):
             else:
                 print("Are you really " + str(username) + " ? Checking...")
                 if login(ind, username, password):
-                    logged_in_menu(username)
+                    logged_in_menu(username, ind)
 
         elif choice == "3":
             exit = True
