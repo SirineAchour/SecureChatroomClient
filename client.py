@@ -469,7 +469,7 @@ if __name__ == "__main__":
     key = genkey()
     host = sys.argv[1]
     port = int(sys.argv[2]) 
-    uname = sys.argv[4]
+    #uname = sys.argv[4]
     ind = 0 
     newuser = False 
     #s.settimeout()
