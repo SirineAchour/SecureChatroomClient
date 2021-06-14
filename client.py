@@ -115,7 +115,7 @@ def rcv_file(file) :
     filename=str(file)
     with open(filename,'wb') as f : 
         data = s.recv(BUFFER_SIZE)
-        f.write(data.decode("utf-8"))
+        f.write(data)
         f.close()
     s.sendall('1'.encode('utf-8'))
 
