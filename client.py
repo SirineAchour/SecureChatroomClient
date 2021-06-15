@@ -554,11 +554,11 @@ if __name__ == "__main__":
         s.connect((host, port))
         ind = recv_msg()
 
-        print(str(ind) )
+        #print(str(ind) )
     except :
         print("\033[91m"+'Unable to connect, Server is unavailable'+"\033[0m")
         sys.exit()
 
-    print("Connected to the chat server. You can start sending messages.")
+    #print("Connected to the chat server. You can start sending messages.")
     sys.exit(main_menu(ind,key))
 
