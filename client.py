@@ -353,6 +353,9 @@ def logged_in_menu(username, ind, my_key, ca_key):
                         msgs = []
                         sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
                         msg = sys.stdin.readline()
+                        print("*msg")
+                        print(msg)
+                        print(len(msg))
                         while len(msg) != 0:
                             msgs.append(msg)
                             sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
