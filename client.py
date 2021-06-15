@@ -285,9 +285,12 @@ def login(ind, username, password):
         else :
             print("Busted! You're not really "+str(username)+".. Go away imposter!")
             input()
+            clear()
             return False
     except:
             print("Something went wrong :( Try again ?")
+            input()
+            clear()
             return False
 
 def logout(ind):
@@ -493,20 +496,17 @@ def main_menu(ind,key):
         if choice == "1":
             print("SIGN UP:\nPlease provide a valid and unique username :")
             username = input()
-            while not validate_username(username, False):
-                username = input()
-
-            print("Now provide a password (make sure to use symbols, numbers and letters and make it long):")
-            password = getpass.getpass()
-            while not validate_password(password):
-                print("Huh... Is that really the password you want ? I don't think so. Try again")
-                #password = input()
+            if validate_username(username, False):
+                print("Now provide a password (make sure to use symbols, numbers and letters and make it long):")
                 password = getpass.getpass()
-            if signup(ind,'csr',key, username, password):
-                #logged_in_menu(username)
-                print("Now go login")
-                input()
-                clear()
+                while not validate_password(password):
+                    print("Huh... Is that really the password you want ? I don't think so. Try again")
+                    password = getpass.getpass()
+                if signup(ind,'csr',key, username, password):
+                    #logged_in_menu(username)
+                    print("Now go login")
+            input()
+            clear()
 
         elif choice == "2":
             print("LOGIN:\nUsername ?")
@@ -514,7 +514,7 @@ def main_menu(ind,key):
             while not validate_username(username, True):
                 username = input()
 
-            print("Password ?")
+            #print("Password ?")
             password = getpass.getpass()
             if not validate_password(password):
                 print("That can't really be your password.. Try again")
