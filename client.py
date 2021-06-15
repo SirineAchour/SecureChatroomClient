@@ -236,6 +236,16 @@ def chat_client():
                 sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
 
 
+def check_if_user_in_list_of_connected_users(ind,username):
+    send_msg(str(ind) + 'cus')
+    msg =  recv_msg()
+    while msg != '/done/' :
+      if username == msg:
+          print ("*connected user found")
+          return True
+      msg = recv_msg()
+    print ("*connected user not found")
+    return False
 
 def users(connected, ind):
     if connected:
@@ -293,7 +303,7 @@ def clear():
         os.system('clear')
         return
 
-def logged_in_menu(username, ind):
+def logged_in_menu(username, ind, my_key, ca_key):
     logged_in = True
     while logged_in:
         clear()
@@ -327,62 +337,69 @@ def logged_in_menu(username, ind):
                     stay_in_submenu = False
                 else:
                     stay_in_submenu = True
+        
         elif option == "2":
             while stay_in_submenu:
-                print("1- New message")
-                print("2- All messages")
+                print("1- Enter Chatroom") # everything is encoded using server key
+                print("2- Send private message") # encoded using receiver's public key 
                 print("3- Return")
                 submenu_option = input()
                 clear()
-                if submenu_option == "1":
-                    print("NEW MESSAGE:")
-                    target = input("Target : ")
+                if submenu_option == "2":
+                    print("SEND PRIVATE MESSAGES:")
+                    target = input("Please enter the receiver's username : ")
 
-                    if actions.check_if_user_in_list_of_users(target):
+                    if check_if_user_in_list_of_connected_users(ind,target):
                         msgs = []
-                        msg = input("Message : ")
+                        sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
+                        msg = sys.stdin.readline()
                         while len(msg) != 0:
                             msgs.append(msg)
-                            msg = input("Message : ")
+                            sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
+                            msg = sys.stdin.readline()
+                        print("*messages :")
+                        print(str(msgs))
                         for msg in msgs:
-                            actions.send_new_message(target, msg)
+                            send_msg(str(ind)+'msg')
+                            send_msg(target)
+                            msg = encrypt(ca_key,msg)
+                            send_msg(msg)
                         print("Messages sent!")
                     else:
-                        print("Boohoo user doesn't exist")
+                        print(target +" ? What "+target+" ?")
                     input()
                     clear()
-                elif submenu_option == "2":
-                    print("ALL MESSAGES:")
-                    messages = []
-                    messages = actions.messages(username)
-                    i = 1
-                    for message in messages:
-                        print(str(i) + ") " + message['sender'] + ": " + message['msg'])
-                        i = i + 1
-                    i = input()
-                    clear()
+                elif submenu_option == "1":
+                    in_chatroom = True
+                    print("CHATROOM :")
+                    #print all messages 
+                    sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
+                    while in_chatroom:
+                        socket_list = [sys.stdin, s]
+                        read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
 
-                    convo = []
-                    convo = actions.messages_of_user(username, messages[int(i) - 1]['sender'])
-                    for line in convo:
-                        print("(" + line["date"] + ") " + line['sender'] + ": " + line['msg'])
-                    # start thread that sends msgs
-                    send_msgs_thread = threading.Thread(target=actions.send_message,
-                                                        args=(username, messages[int(i) - 1]['sender'],))
-                    send_msgs_thread.start()
-
-                    # _thread.start_new_thread(actions.send_message, (username, messages[int(i) - 1]['sender'], ))
-
-                    # start thread that receives msgs
-                    receive_msgs_thread = threading.Thread(target=actions.receive_message,
-                                                           args=(username, messages[int(i) - 1]['sender'],))
-                    receive_msgs_thread.start()
-                    send_msgs_thread.join()
-                    receive_msgs_thread.join()
-                    # _thread.start_new_thread(actions.receive_message, (username, messages[int(i) - 1]['sender'],))
-
-                    input()
-                    clear()
+                        for sock in read_sockets:
+                            if sock == s:
+                                data = recv_msg()
+                                if not data :
+                                    print("\033[91m"+"\nServer shutdown !!"+"\033[0m")
+                                    sys.exit()
+                                elif data[:7] == 'nouveau':
+                                    sys.stdout.write(data)
+                                else : 
+                                    data = decrypt(my_key,data)
+                                    sys.stdout.write(data)
+                                    sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
+                            else :
+                                msg = sys.stdin.readline()
+                                if msg == "/leave/":
+                                    in_chatroom = False
+                                else:
+                                    send_msg(str(ind)+'msg')
+                                    send_msg("")
+                                    msg = encrypt(ca_key,msg)
+                                    send_msg(msg)
+                                    sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
                 elif submenu_option == "3":
                     stay_in_submenu = False
                 else:
@@ -424,6 +441,7 @@ def logged_in_menu(username, ind):
                     stay_in_submenu = False
                 else:
                     stay_in_submenu = True
+        
         else:
             pass
 
@@ -495,7 +513,14 @@ def main_menu(ind,key):
             else:
                 print("Are you really " + str(username) + " ? Checking...")
                 if login(ind, username, password):
-                    logged_in_menu(username, ind)
+                    pem_ca_cert = open('ca.pem','rb').read()    
+                    ca_cert = x509.load_pem_x509_certificate(pem_ca_cert, default_backend())
+                    ca_key =  ca_cert.public_key()    
+
+
+                    pem_ca_key = open('clientkey.pem' , 'rb').read()
+                    my_key = serialization.load_pem_private_key(pem_ca_key, password = None,backend = default_backend())
+                    logged_in_menu(username, ind, my_key, ca_key)
 
         elif choice == "3":
             exit = True
