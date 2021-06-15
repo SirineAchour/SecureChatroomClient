@@ -62,7 +62,7 @@ def genkey() :
 
 def encrypt(public_key,msg):
     ciphertext = public_key.encrypt(
-    msg,
+    msg.encode('utf-8'),
     padding.OAEP(
          mgf=padding.MGF1(algorithm=hashes.SHA256()),
          algorithm=hashes.SHA256(),
