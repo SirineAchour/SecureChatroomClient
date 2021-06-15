@@ -82,8 +82,8 @@ def decrypt (public_key,msg):
     return data
 
 def send_file(pref , file) :
-    print("pref : "+str(pref))
-    print("file : "+str(file))
+    #print("pref : "+str(pref))
+    #print("file : "+str(file))
     f = open(file, 'rb') 
     l = f.read(BUFFER_SIZE)
     tmp = pref + l.decode("utf-8")
@@ -92,19 +92,19 @@ def send_file(pref , file) :
     f.close()
 
 def send_msg(msg) : 
-    print("sending : ")
-    print(str(msg))
+    #print("sending : ")
+    #print(str(msg))
     data = str(msg)
     s.sendall(data.encode('utf-8'))
-    print("waiting for recv 1")
+    #print("waiting for recv 1")
     s.recv(1)
-    print("received 1")
+    #print("received 1")
 
 
 def recv_msg( ) : 
     data = s.recv(8192)
     s.sendall('1'.encode('utf-8'))
-    print("received this : "+str(data.decode("utf-8")))
+    #print("received this : "+str(data.decode("utf-8")))
     return data.decode("utf-8")
 
 
@@ -124,25 +124,25 @@ def register(ind,msg,key) :
     carte = input('NCarte: ')
 
     create_csr(u"at",u"at",u"at",u"at",u"at",key)
-    print("ind : "+str(ind))
-    print("msg : "+str(msg))
+    #print("ind : "+str(ind))
+    #print("msg : "+str(msg))
     send_file(str(ind)+msg , 'clientcsr.pem') 
     rcv_file("certificate.pem")
     rcv_file("ca.pem")  
-    print('registration complete') 
+    #print('registration complete') 
     send_msg(login)
     send_msg(password)
     send_msg(email)
     send_msg(carte)
-    print("GONNA WAIT FOR ANSWER")
+    #print("GONNA WAIT FOR ANSWER")
     answer = recv_msg()
-    print("got answer")
-    print(answer)
-    print("done with registration")
+    #print("got answer")
+    #print(answer)
+    #print("done with registration")
 
 
 def recv_clients():
-    print("IN RECV  CLIENTS")
+    #print("IN RECV  CLIENTS")
     msg =  recv_msg()
     while msg != '/done/' :
       print(msg)
@@ -151,15 +151,15 @@ def recv_clients():
 
 def auth(ind) : 
     send_msg(str(ind) + 'aut')
-    print('time to authenticate : \n')
+    #print('time to authenticate : \n')
     login = input('login : ')
     password = getpass.getpass()
     send_msg(login)
     send_msg(password)
     answer = recv_msg()
     if answer == 'done' :
-        print('authentification complete' )
-        print('\navailable people to chat with : \n')
+        #print('authentification complete' )
+        #print('\navailable people to chat with : \n')
         recv_clients()
     else :
         print('error , bad credentials')
@@ -241,10 +241,10 @@ def check_if_user_in_list_of_connected_users(ind,username):
     msg =  recv_msg()
     while msg != '/done/' :
       if username == msg:
-          print ("*connected user found")
+          #print ("*connected user found")
           return True
       msg = recv_msg()
-    print ("*connected user not found")
+    #print ("*connected user not found")
     return False
 
 def users(connected, ind):
@@ -270,7 +270,7 @@ def signup(ind,msg,key,username,password) :
         return False
 
 def login(ind, username, password):
-    print("*in login")
+    #print("*in login")
     try:
         send_msg(str(ind) + 'aut')
         send_msg(username)
@@ -358,15 +358,15 @@ def logged_in_menu(username, ind, my_key, ca_key):
                             msgs.append(msg)
                             sys.stdout.write("\033[34m"+'\n[Me :] '+ "\033[0m"); sys.stdout.flush()
                             msg = sys.stdin.readline()
-                            print(msg)
-                            print(len(msg))
-                            print(msg == "/done/")
+                            #print(msg)
+                            #print(len(msg))
+                            #print(msg == "/done/")
                             msg = msg[:len(msg)-1]
-                            print(msg)
-                            print(len(msg))
-                            print(msg == "/done/")
-                        print("*messages :")
-                        print(str(msgs))
+                            #print(msg)
+                            #print(len(msg))
+                            #print(msg == "/done/")
+                        #print("*messages :")
+                        #print(str(msgs))
                         for msg in msgs:
                             send_msg(str(ind)+'msg')
                             send_msg(target)
@@ -538,12 +538,12 @@ def main_menu(ind,key):
 
 if __name__ == "__main__":
     os_name = platform.system()
-    if(len(sys.argv) < 3) :
-        print('Run : python client.py <hostname|ip_address> <port>')
+    if(len(sys.argv) < 2) :
+        print('Run : python client.py <hostname|ip_address>')
         sys.exit()
     key = genkey()
     host = sys.argv[1]
-    port = int(sys.argv[2]) 
+    port = 1001
     #uname = sys.argv[4]
     ind = 0 
     newuser = False 
